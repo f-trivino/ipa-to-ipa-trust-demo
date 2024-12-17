@@ -37,7 +37,7 @@ sudo dnf install -y git-core ansible ansible-collection-containers-podman podman
 1. **Clone the Repository**
 
     ```bash
-    git clone https://github.com/f-trivino/ipa-to-ipa-trust-demo.git
+    git clone https://github.com/f-trivino/ipa-to-ipa-trust-demo.git && cd ipa-to-ipa-trust-demo
     ```
 
 2. **Install ipalab-config and ansible-freeipa**
@@ -46,7 +46,7 @@ sudo dnf install -y git-core ansible ansible-collection-containers-podman podman
     ```bash
     python3 -m venv ipalab && cd ipalab && source bin/activate
     pip install "ansible-core<2.18"
-    pip install ipalab-config
+    pip install "ipalab-config==0.4.1"
     ansible-galaxy collection install freeipa.ansible_freeipa
     ```
 
@@ -54,7 +54,7 @@ sudo dnf install -y git-core ansible ansible-collection-containers-podman podman
 
     The tool ipalab-config will generate all needed files.
     ```bash
-    ipalab-config -f ../image/containerfile ../multihosts/ipa1demo-ipa2demo.clusters && cd ipa1demo-ipa2demo
+    ipalab-config -f ../images/containerfile.ipatrust ../multihosts/ipa1demo-ipa2demo.clusters && cd ipa1demo-ipa2demo
     podman-compose up -d
     ansible-playbook -i inventory.yml playbooks/install-cluster.yml
     ```
@@ -96,9 +96,15 @@ podman ps
 podman exec -it m1 /bin/bash
 ```
 
+# Existing limitations
+
+Currently, the environment requires running with **root privileges** due to limitations with the container services deployed. Some of the services, such as samba, rely on specific configurations and system-level resources that are not fully accessible when running as a non-root user. While this is a known limitation, it ensures the proper functionality and integration of the containerized services within the testing environment.
+
+
 # Credits
 This demo project would not have been possible without the contributions and efforts of the following individuals and tools:
 
 ipalab-config: Developed by Rafael Jeffman (@rjeffman), a key component in managing and configuring environments within this demo.
 
 ipa-to-ipa trust work: Pioneered by Alexander Bokovoy, whose work has been instrumental in enabling IPA-to-IPA trust scenarios and improving overall IdM capabilities.
+
